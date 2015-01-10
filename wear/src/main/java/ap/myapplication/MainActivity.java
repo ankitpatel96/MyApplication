@@ -12,9 +12,12 @@ import android.widget.TextView;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
@@ -95,6 +98,10 @@ public class MainActivity extends Activity {
                     if (!result.getStatus().isSuccess()) {
                        Log.d("hello", "ERROR: failed to send Message: " + result.getStatus());
                     }
+                    else{
+
+                        Log.d("herro", "Sent message");
+                    }
                 }
             });
         } else {
@@ -102,7 +109,14 @@ public class MainActivity extends Activity {
         }
     }
 
-
+    public void kresh(View view) {
+        PutDataMapRequest dataMap = PutDataMapRequest.create("/count");
+        dataMap.getDataMap().putInt("rando", 997);
+        PutDataRequest request = dataMap.asPutDataRequest();
+        PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
+                .putDataItem(mGoogleApiClient, request);
+        Log.d("du hello", "data synced");
+    }
     public void zzz(View view) {
         findPhoneNode();
 

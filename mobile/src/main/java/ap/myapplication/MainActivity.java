@@ -1,5 +1,9 @@
 package ap.myapplication;
 
+
+
+
+
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -13,22 +17,30 @@ import android.view.View;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.NotificationCompat.WearableExtender;
+//import static com.ap.myapplication.ListenerService.LOGD;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 
+
 public class MainActivity extends ActionBarActivity implements
-        DataApi.DataListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        DataApi.DataListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MessageApi.MessageListener {
 
     private GoogleApiClient mGoogleApiClient;
+    public byte[] bitches = {1,2,3,4,5};
     public static final String START_ACTIVITY_PATH = "/start/MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +56,17 @@ public class MainActivity extends ActionBarActivity implements
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+
+
     }
+
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        if (Log.isLoggable("ho", Log.DEBUG)) {
             Log.d("hoo", "Connected to Google Api Service");
-        }
-        Wearable.DataApi.addListener(mGoogleApiClient, this);
+
+//        Wearable.DataApi.addListener(mGoogleApiClient, this);
+        Wearable.MessageApi.addListener(mGoogleApiClient, this);
     }
 
     @Override
@@ -64,24 +79,29 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     public void onConnectionSuspended(int ho) {
+        Log.d("hee", "Suspended to Google Api Service");
     }
 
     public void onConnectionFailed(ConnectionResult ho) {
+        Log.d("hzo", "Failed to connect to Google Api Service");
     }
 
-    public void onMessageReceived(MessageEvent messageEvent) {
-        if (messageEvent.getPath().equals(START_ACTIVITY_PATH)) {
-            String number = "510-364-9907";
 
-            String uri = "tel:" + number.trim() ;
-            Intent intent = new Intent(Intent.ACTION_CALL);
-            intent.setData(Uri.parse(uri));
-            startActivity(intent);
-        }
+
+    public void onMessageReceived(MessageEvent messageEvent) {
+//        if (messageEvent.getPath().equals(START_ACTIVITY_PATH)) {
+//            String number = "510-364-9907";
+//
+//            String uri = "tel:" + number.trim() ;
+//            Intent intent = new Intent(Intent.ACTION_CALL);
+//            intent.setData(Uri.parse(uri));
+//            startActivity(intent);
+//        }
     }
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
+
         for (DataEvent event : dataEvents) {
             if (event.getType() == DataEvent.TYPE_DELETED) {
                 Log.d("data changed ho", "DataItem deleted: " + event.getDataItem().getUri());
@@ -112,6 +132,7 @@ public class MainActivity extends ActionBarActivity implements
 
         return super.onOptionsItemSelected(item);
     }
+
 
     public void hello(View view){
         System.out.println("hi");
