@@ -84,6 +84,7 @@ public class MainActivity extends Activity {
     {
         sendToPhone("navigateToCar");
     }
+
     public void lockButtonHandler(View view)
     {
         sendToPhone("lockButtonHandler");

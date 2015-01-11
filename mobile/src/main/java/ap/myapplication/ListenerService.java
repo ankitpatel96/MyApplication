@@ -90,9 +90,7 @@ public class ListenerService extends WearableListenerService{
         if (messageEvent.getPath().equals("heartrateStart")) {
             MainActivity.heartrateStart(this);
         }
-        if (messageEvent.getPath().equals("hello")) {
-            MainActivity.hello(this);
-        }
+
         if (messageEvent.getPath().equals("navigateToCar")) {
             MainActivity.navigateToCarWorker(this);
         }

@@ -139,8 +139,8 @@
             android:gravity="center"
             android:clickable="true"
             android:background="@drawable/states_circle_red"
-            android:onClick="hello"
-            android:text="Notify Me"/>
+            android:onClick="friends"
+            android:text="Friends"/>
 
         <TextView
             android:id="@+id/btn_indigo"

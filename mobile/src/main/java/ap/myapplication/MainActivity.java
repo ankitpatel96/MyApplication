@@ -233,11 +233,11 @@ public class MainActivity extends ActionBarActivity implements
     }
 
 
-    public void hello(){
+    public void hello() throws IOException{
         hello(this);
     }
 
-    public static void hello(Context context) {
+    public static void hello(Context context) throws IOException {
         System.out.println("hi");
         int notificationId = 001;
         String str1 = "hello";
@@ -262,13 +262,17 @@ public class MainActivity extends ActionBarActivity implements
         PendingIntent bozo =
                 PendingIntent.getActivity(context, 0, intent, 0);
 
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.common_signin_btn_icon_disabled_dark)
-                        .setContentTitle("" + heartRate + " + " + str1)
-                        .setContentText("hi")
-                        .setContentIntent(viewPendingIntent)
-                        .addAction(R.drawable.ic_launcher, "foolianne", bozo);
+
+            NotificationCompat.Builder notificationBuilder =
+                    new NotificationCompat.Builder(context)
+                            .setSmallIcon(R.drawable.common_signin_btn_icon_disabled_dark)
+                            .setContentTitle("" + heartRate + " + " + str1)
+                            .setContentText(getPublicStations.getData("Fremont"))
+                            .setContentIntent(viewPendingIntent)
+                            .addAction(R.drawable.ic_launcher, "foolianne", bozo);
+        Log.d("chargepoint stuff", getPublicStations.getData("Fremont") );
+
+
 
 // Get an instance of the NotificationManager service
         NotificationManagerCompat notificationManager =
@@ -280,7 +284,7 @@ public class MainActivity extends ActionBarActivity implements
 
 
 
-        public void hello(View view){
+        public void hello(View view) throws IOException{
             hello();
         }
 
@@ -289,6 +293,10 @@ public class MainActivity extends ActionBarActivity implements
     }
 
 
+    public void friends(View view){
+        Intent intent = new Intent(this, Friends.class);
+        this.startActivity(intent);
+    }
 
 
     public static void lockButtonHandler() {
@@ -409,6 +417,53 @@ public class MainActivity extends ActionBarActivity implements
                         //Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
                         Uri.parse("google.navigation:q="+ lat + "," + lon));
                         intent.addFlags(intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d("navi failed", e.toString());
+            }
+        } catch (Exception e) {
+            Log.d("location fetch fail", e.toString());
+        }
+    }
+    public static void navigateToCarWorker(Context context, String VIN) {
+        float lat;
+        float lon;
+        try {
+            String loc = CarControl.getLocation();
+            //parser
+            int lathelp = loc.indexOf("lat");
+            int lonhelp = loc.indexOf("lon");
+            lat = Float.parseFloat(loc.substring(lathelp + 5, lonhelp - 2));
+            int headinghelp = loc.indexOf("heading");
+            lon = Float.parseFloat(loc.substring(lonhelp + 5, headinghelp - 2));
+            Log.d("location", Float.toString(lat));
+            Log.d("location", Float.toString(lon));
+
+            //set navigation
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost("http://api.hackthedrive.com/vehicles/" + VIN + "/navigation/");
+            try {
+                List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+                urlParameters.add(new BasicNameValuePair("key", "ankit2015"));
+
+                JSONObject jsonobj = new JSONObject();
+                jsonobj.put("label", "Beamer yo");
+                jsonobj.put("lat", Float.toString(lat));
+                jsonobj.put("lon", Float.toString(lon));
+
+                StringEntity se = new StringEntity(jsonobj.toString());
+                se.setContentType("application/json;charset=UTF-8");
+                post.setEntity(se);
+
+                HttpResponse response = client.execute(post);
+                InputStream a = response.getEntity().getContent();
+                String l = convertInputStreamToString(a);
+                Log.d("navi", l);
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        //Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
+                        Uri.parse("google.navigation:q="+ lat + "," + lon));
+                intent.addFlags(intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();
