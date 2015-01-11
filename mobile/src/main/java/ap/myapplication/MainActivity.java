@@ -225,15 +225,11 @@ public class MainActivity extends ActionBarActivity implements
 
     }
 
-<<<<<<< HEAD
-=======
 
 
 
 
 
-
->>>>>>> origin/master
     public void hello(View view) {
         System.out.println("hi");
         int notificationId = 001;

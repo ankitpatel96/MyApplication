@@ -73,13 +73,15 @@ public class HeartRate extends IntentService {
         public void run() {
 
             count++;
-            fakeRate = (int)(900 * Math.random());
-            //Log.d("fakeRate2", "" + fakeRate);
+            if(fakeRate<=800) {
+                fakeRate = (int) (900 * Math.random());
+                //Log.d("fakeRate2", "" + fakeRate);
 
-            broadcast(fakeRate);
-            //MainActivity.heartRate = fakeRate;
-            //launchMain(fakeRate);
-            handler.postDelayed(this, 500);
+                broadcast(fakeRate);
+                //MainActivity.heartRate = fakeRate;
+                //launchMain(fakeRate);
+                handler.postDelayed(this, 500);
+            }
         }
     };
 }
