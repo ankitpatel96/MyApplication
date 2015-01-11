@@ -170,6 +170,7 @@ public class MainActivity extends ActionBarActivity implements
 //            intent.setData(Uri.parse(uri));
 //            startActivity(intent);
 //        }
+
     }
 
     @Override
@@ -232,11 +233,11 @@ public class MainActivity extends ActionBarActivity implements
     }
 
 
+    public void hello(){
+        hello(this);
+    }
 
-
-
-
-    public void hello(View view) {
+    public static void hello(Context context) {
         System.out.println("hi");
         int notificationId = 001;
         String str1 = "hello";
@@ -248,10 +249,10 @@ public class MainActivity extends ActionBarActivity implements
         Log.d("herrooo", str1);
 
 // Build intent for notification content
-        Intent viewIntent = new Intent(this, MainActivity.class);
+        Intent viewIntent = new Intent(context, MainActivity.class);
         //viewIntent.putExtra(EXTRA_EVENT_ID, eventId);
         PendingIntent viewPendingIntent =
-                PendingIntent.getActivity(this, 0, viewIntent, 0);
+                PendingIntent.getActivity(context, 0, viewIntent, 0);
 
         String number = "510-364-9907";
 
@@ -259,10 +260,10 @@ public class MainActivity extends ActionBarActivity implements
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse(uri));
         PendingIntent bozo =
-                PendingIntent.getActivity(this, 0, intent, 0);
+                PendingIntent.getActivity(context, 0, intent, 0);
 
         NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this)
+                new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.common_signin_btn_icon_disabled_dark)
                         .setContentTitle("" + heartRate + " + " + str1)
                         .setContentText("hi")
@@ -271,11 +272,17 @@ public class MainActivity extends ActionBarActivity implements
 
 // Get an instance of the NotificationManager service
         NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(this);
+                NotificationManagerCompat.from(context);
 
 // Build the notification and issues it with notification manager.
         notificationManager.notify(notificationId, notificationBuilder.build());
     }
+
+
+
+        public void hello(View view){
+            hello();
+        }
 
     public void navigateToCar(View view) {
         navigateToCarWorker();
@@ -284,9 +291,12 @@ public class MainActivity extends ActionBarActivity implements
 
 
 
-    public void lockButtonHandler(View view) {
+    public static void lockButtonHandler() {
         Boolean a = CarControl.lockCar();
         Log.d("lockbuttonstatus", a.toString());
+    }
+    public void lockButtonHandler(View view) {
+        lockButtonHandler();
     }
 
 
@@ -294,20 +304,35 @@ public class MainActivity extends ActionBarActivity implements
         CarControl.honkCar();
     }
 
+    public static void hornButtonHandler() {
+        CarControl.honkCar();
+    }
+
 
 
     public void headlightButtonHandler(View view) { CarControl.toggleHeadlights();}
 
-    public void heartrateStart(View view){
-        /*
+        public static void heartrateStart(Context context){
+
+                    /*
  * Creates a new Intent to start the HeartRate
  * IntentService. Passes a URI in the
  * Intent's "data" field.
  */
-        Intent mServiceIntent = new Intent(this, HeartRate.class);
-        mServiceIntent.setData(Uri.parse("uri1"));
-        // Starts the IntentService
-        this.startService(mServiceIntent);
+            Intent mServiceIntent = new Intent(context, HeartRate.class);
+            mServiceIntent.setData(Uri.parse("uri1"));
+            // Starts the IntentService
+            context.startService(mServiceIntent);
+
+        }
+
+    public void heartrateStart(){
+        heartrateStart(this);
+
+    }
+
+    public void heartrateStart(View view) {
+        heartrateStart();
     }
 
     public void startListening() {
@@ -343,20 +368,10 @@ public class MainActivity extends ActionBarActivity implements
         }
 
     };
-    public final BroadcastReceiver LockReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.v("lock", "I Arrived!!!!");
-            Log.v("lock",intent.getAction());
-        }
-    };
-
-    public void statusHandler(View view) {
-        Log.d("status","here we are");
-        checkStatus();
+    public void navigateToCarWorker(){
+        navigateToCarWorker(this);
     }
-    public void navigateToCarWorker() {
+    public static void navigateToCarWorker(Context context) {
         float lat;
         float lon;
         try {
@@ -391,8 +406,10 @@ public class MainActivity extends ActionBarActivity implements
                 String l = convertInputStreamToString(a);
                 Log.d("navi", l);
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                        Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
-                startActivity(intent);
+                        //Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
+                        Uri.parse("google.navigation:q="+ lat + "," + lon));
+                        intent.addFlags(intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.d("navi failed", e.toString());
@@ -401,6 +418,20 @@ public class MainActivity extends ActionBarActivity implements
             Log.d("location fetch fail", e.toString());
         }
     }
+    public final BroadcastReceiver LockReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.v("lock", "I Arrived!!!!");
+            Log.v("lock",intent.getAction());
+        }
+    };
+
+    public void statusHandler(View view) {
+        Log.d("status","here we are");
+        checkStatus();
+    }
+
     public void checkStatus() {
         Log.d("status", "commenced");
         int notificationId = 4;

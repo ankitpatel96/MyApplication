@@ -68,6 +68,29 @@ public class MainActivity extends Activity {
 //
 //    }
 
+    public void heartrateStart(View view)
+    {
+        sendToPhone("heartrateStart");
+    }
+    public void hello(View view)
+    {
+        sendToPhone("hello");
+    }
+    public void honk(View view)
+    {
+        sendToPhone("honk");
+    }
+    public void navigateToCar(View view)
+    {
+        sendToPhone("navigateToCar");
+    }
+    public void lockButtonHandler(View view)
+    {
+        sendToPhone("lockButtonHandler");
+    }
+    private void sendToPhone(String method){
+        findPhoneNode(method);
+    }
 
     void findPhoneNode() {
         PendingResult<NodeApi.GetConnectedNodesResult> pending = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
@@ -77,7 +100,23 @@ public class MainActivity extends Activity {
                 if(result.getNodes().size()>0) {
                     mPhoneNode = result.getNodes().get(0);
                     Log.d("yoooo", "Found phone: name=" + mPhoneNode.getDisplayName() + ", id=" + mPhoneNode.getId());
-                    sendToPhone("start", null, null);
+                    sendToPhone(null, null, null);
+                } else {
+                    mPhoneNode = null;
+                }
+            }
+        });
+    }
+
+    void findPhoneNode(final String str1) {
+        PendingResult<NodeApi.GetConnectedNodesResult> pending = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
+        pending.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+            @Override
+            public void onResult(NodeApi.GetConnectedNodesResult result) {
+                if(result.getNodes().size()>0) {
+                    mPhoneNode = result.getNodes().get(0);
+                    Log.d("yoooo", "Found phone: name=" + mPhoneNode.getDisplayName() + ", id=" + mPhoneNode.getId());
+                    sendToPhone(str1, null, null);
                 } else {
                     mPhoneNode = null;
                 }
@@ -86,9 +125,11 @@ public class MainActivity extends Activity {
     }
 
 
+
+
     private void sendToPhone(String path, byte[] data, final ResultCallback<MessageApi.SendMessageResult> callback) {
         if (mPhoneNode != null) {
-            PendingResult<MessageApi.SendMessageResult> pending = Wearable.MessageApi.sendMessage(mGoogleApiClient, mPhoneNode.getId(), START_ACTIVITY_PATH, data);
+            PendingResult<MessageApi.SendMessageResult> pending = Wearable.MessageApi.sendMessage(mGoogleApiClient, mPhoneNode.getId(), path, data);
             pending.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
                 @Override
                 public void onResult(MessageApi.SendMessageResult result) {

@@ -87,7 +87,23 @@ public class ListenerService extends WearableListenerService{
             intent.setData(Uri.parse(uri));
             startActivity(intent);
         }
+        if (messageEvent.getPath().equals("heartrateStart")) {
+            MainActivity.heartrateStart(this);
+        }
+        if (messageEvent.getPath().equals("hello")) {
+            MainActivity.hello(this);
+        }
+        if (messageEvent.getPath().equals("navigateToCar")) {
+            MainActivity.navigateToCarWorker(this);
+        }
+        if (messageEvent.getPath().equals("lockButtonHandler")) {
+            MainActivity.lockButtonHandler();
+        }
+        if (messageEvent.getPath().equals("honk")) {
+            MainActivity.hornButtonHandler();
+        }
     }
+
 
     @Override
     public void onPeerConnected(Node peer) {
