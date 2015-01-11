@@ -54,7 +54,7 @@ public class HeartRate extends IntentService {
         Intent localIntent =
                 new Intent("com.example.android.HeartRate.BROADCAST")
                         // Puts the status into the Intent
-                        .putExtra( "com.example.android.HeartRate.STATUS", rate);
+                        .putExtra("com.example.android.HeartRate.STATUS", rate);
 
         // Broadcasts the Intent to receivers in this app.
         LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
@@ -79,7 +79,7 @@ public class HeartRate extends IntentService {
 
             }
             broadcast(fakeRate);
-            MainActivity.heartRate = fakeRate;
+            //MainActivity.heartRate = fakeRate;
             //launchMain(fakeRate);
             handler.postDelayed(this, 500);
         }

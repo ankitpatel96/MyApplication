@@ -22,7 +22,7 @@ public class HeartRateReceiver extends BroadcastReceiver{
          * Handle Intents here.
          */
 
-        int fakeRate = intent.getIntExtra("rate", -1);
+        int fakeRate = intent.getIntExtra("com.example.android.HeartRate.STATUS", -1);
         Log.d("Receiver", "Fake Rate Received and is " + fakeRate);
         if (fakeRate != -1){
             MainActivity.heartRate = fakeRate;
