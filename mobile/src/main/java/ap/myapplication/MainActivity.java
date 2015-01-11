@@ -384,6 +384,10 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     public Boolean honkCar(int count) {
+
+        CarControl.checkTrunk();
+
+
             HttpClient client = new DefaultHttpClient();
             HttpPost post = new HttpPost("http://api.hackthedrive.com/vehicles/" + VIN + "/horn/");
             try {

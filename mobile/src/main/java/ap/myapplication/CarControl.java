@@ -10,6 +10,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class CarControl {
         return result;
 
     }
-    public Boolean checkTrunk() {
+    public static Boolean checkTrunk() {
         HttpClient client = new DefaultHttpClient();
         HttpPost post = new HttpPost("http://api.hackthedrive.com/vehicles/" + MainActivity.VIN + "/trunk/");
         try {
@@ -48,9 +49,9 @@ public class CarControl {
             InputStream a = response.getEntity().getContent();
             String l = convertInputStreamToString(a);
             Log.d("lights", l);
-            int frontHelper = l.indexOf("isFrontOpen");
-            int rearHelper = l.indexOf("isBackOpen");
-
+            JSONObject object = (JSONObject) new JSONTokener(l).nextValue();
+            Log.d("parser", object.getString("isFrontOpen"));
+            Log.d("parser",object.toString());
             return true;
         } catch (Exception e) {
             e.printStackTrace();

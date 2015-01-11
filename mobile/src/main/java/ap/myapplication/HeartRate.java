@@ -36,19 +36,37 @@ public class HeartRate extends IntentService {
         Log.d("fakeRate", "" + fakeRate);
 
 
-        Intent localIntent =
-                new Intent("com.example.android.HeartRate.BROADCAST")
-                        // Puts the status into the Intent
-                        .putExtra( "com.example.android.HeartRate.STATUS", fakeRate);
-
-        // Broadcasts the Intent to receivers in this app.
-        LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
+//        Intent localIntent =
+//                new Intent("com.example.android.HeartRate.BROADCAST")
+//                        // Puts the status into the Intent
+//                        .putExtra( "com.example.android.HeartRate.STATUS", fakeRate);
+//
+//        // Broadcasts the Intent to receivers in this app.
+//        LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
 
 
 
         handler.post(updateTextRunnable);
 
     }
+
+    public void broadcast(int rate){
+        Intent localIntent =
+                new Intent("com.example.android.HeartRate.BROADCAST")
+                        // Puts the status into the Intent
+                        .putExtra( "com.example.android.HeartRate.STATUS", rate);
+
+        // Broadcasts the Intent to receivers in this app.
+        LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
+    }
+
+//    public void launchMain(int rate){
+//        if(fakeRate > 800){
+//            Intent intent = new Intent(this, MainActivity.class);
+//            startActivity(intent);
+//        }
+//    }
+
 
 
     Runnable updateTextRunnable=new Runnable(){
@@ -58,7 +76,11 @@ public class HeartRate extends IntentService {
             fakeRate = (int)(900 * Math.random());
             Log.d("fakeRate2", "" + fakeRate);
             if(fakeRate > 800){
+
             }
+            broadcast(fakeRate);
+            MainActivity.heartRate = fakeRate;
+            //launchMain(fakeRate);
             handler.postDelayed(this, 500);
         }
     };
