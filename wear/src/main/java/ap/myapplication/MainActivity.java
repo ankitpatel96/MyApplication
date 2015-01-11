@@ -8,6 +8,7 @@ import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -79,6 +80,7 @@ public class MainActivity extends Activity {
     public void honk(View view)
     {
         sendToPhone("honk");
+        Toast.makeText(getApplicationContext(), "Horn activated", Toast.LENGTH_LONG).show();
     }
     public void navigateToCar(View view)
     {
@@ -88,6 +90,7 @@ public class MainActivity extends Activity {
     public void lockButtonHandler(View view)
     {
         sendToPhone("lockButtonHandler");
+        Toast.makeText(getApplicationContext(), "Doors Locked", Toast.LENGTH_LONG).show();
     }
     private void sendToPhone(String method){
         findPhoneNode(method);

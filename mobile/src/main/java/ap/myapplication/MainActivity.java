@@ -284,7 +284,7 @@ public class MainActivity extends ActionBarActivity implements
 
 
 
-        public void hello(View view) throws IOException{
+   public void hello(View view) throws IOException{
             hello();
         }
 
@@ -298,29 +298,31 @@ public class MainActivity extends ActionBarActivity implements
         this.startActivity(intent);
     }
 
-
     public static void lockButtonHandler() {
         Boolean a = CarControl.lockCar();
         Log.d("lockbuttonstatus", a.toString());
     }
+
     public void lockButtonHandler(View view) {
         lockButtonHandler();
+        Toast.makeText(getApplicationContext(), "Doors Locked", Toast.LENGTH_LONG).show();
     }
-
 
     public void hornButtonHandler(View view) {
         CarControl.honkCar();
+        Toast.makeText(getApplicationContext(), "Horn activated", Toast.LENGTH_LONG).show();
     }
 
     public static void hornButtonHandler() {
         CarControl.honkCar();
     }
 
+    public void headlightButtonHandler(View view) {
+        CarControl.toggleHeadlights();
+        Toast.makeText(getApplicationContext(), "Headlights toggled", Toast.LENGTH_LONG).show();
+    }
 
-
-    public void headlightButtonHandler(View view) { CarControl.toggleHeadlights();}
-
-        public static void heartrateStart(Context context){
+    public static void heartrateStart(Context context){
 
                     /*
  * Creates a new Intent to start the HeartRate
@@ -341,6 +343,7 @@ public class MainActivity extends ActionBarActivity implements
 
     public void heartrateStart(View view) {
         heartrateStart();
+        Toast.makeText(getApplicationContext(), "Heartrate monitoring started", Toast.LENGTH_LONG).show();
     }
 
     public void startListening() {
@@ -365,7 +368,7 @@ public class MainActivity extends ActionBarActivity implements
                 } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(trueAction)) {
                     String deviceName = device.getName();
                     Toast.makeText(context, deviceName + " Device has disconnected", Toast.LENGTH_LONG).show();
-                    if(deviceName.contains("Watch")) {
+                    if(deviceName.contains("BMW")) {
                         Toast.makeText(context, deviceName + " OMG I FOUND IT", Toast.LENGTH_LONG).show();
                         Log.d("hi","hey");
                         checkStatus();
