@@ -41,7 +41,7 @@ public class HeartRateReceiver extends BroadcastReceiver{
         Log.d("Receiver", "Fake Rate Received and is " + heartRate);
         if (heartRate != -1){
             if(heartRate > 800){
-                String number = "5107095747";
+                String number = "5103649907";
                 Log.d("carlocation","location being checked");
                 String texter = generateEmergencyText();
                 Log.d("tag",texter);
