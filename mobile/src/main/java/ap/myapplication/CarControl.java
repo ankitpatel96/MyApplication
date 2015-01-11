@@ -131,6 +131,26 @@ public class CarControl extends Activity{
             return false;
         }
     }
+    public static int[] fetchLocation() {
+        Log.d("debug","location being checked");
+        HttpClient client = new DefaultHttpClient();
+
+        try {
+            List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+            HttpResponse response = client.execute(new HttpGet("http://api.hackthedrive.com/vehicles/" + MainActivity.VIN + "/location/"));
+            InputStream a = response.getEntity().getContent();
+            String l = convertInputStreamToString(a);
+            JSONObject object = (JSONObject) new JSONTokener(l).nextValue();
+            Log.d("door checked", object.toString());
+            int[] z = {Integer.parseInt(object.getString("lat")),Integer.parseInt(object.getString("lon"))};
+            return z;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("location failed", e.toString());
+
+            return null;
+        }
+    }
     public static Boolean checkLock() {
             Log.d("debug","lock being checked");
             HttpClient client = new DefaultHttpClient();

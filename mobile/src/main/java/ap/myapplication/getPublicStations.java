@@ -8,11 +8,11 @@ public class getPublicStations
 
 
     public static void main(String[] args) throws Throwable {
-        String output = getData("Campbell");
-        System.out.println(output);
+//        String output = getData("Campbell");
+//        System.out.println(output);
     }
 
-    public static String getData(String city) throws MalformedURLException, IOException {
+    public static InputStream getData(int lat, int lon) throws MalformedURLException, IOException {
 
         //Code to make a webservice HTTP request
         String responseString = "";
@@ -42,8 +42,8 @@ public class getPublicStations
                         "				<Proximity>10</Proximity>\n" +
                         "				<proximityUnit>M</proximityUnit>\n" +
                         "				<Geo>\n" +
-                        "					<Lat>37.425758</Lat>\n" +
-                        "					<Long>-122.097807</Long>\n" +
+                        "					<Lat>" + lat + "</Lat>\n" +
+                        "					<Long>" + lon + "</Long>\n" +
                         "				</Geo>\n" +
                         "			</searchQuery>\n" +
                         "		</ns2:getPublicStations>\n" +
@@ -71,17 +71,17 @@ public class getPublicStations
         out.write(b);
         out.close();
         //Ready with sending the request.
-
+        InputStream a = httpConn.getInputStream();
         //Read the response.
-        InputStreamReader isr =
-                new InputStreamReader(httpConn.getInputStream());
-        BufferedReader in = new BufferedReader(isr);
+//        InputStreamReader isr =
+//                new InputStreamReader(httpConn.getInputStream());
+//        BufferedReader in = new BufferedReader(isr);
 
         //Write the SOAP message response to a String.
-        while ((responseString = in.readLine()) != null) {
-            outputString = outputString + responseString;
-        }
-        return outputString;
-
+//        while ((responseString = in.readLine()) != null) {
+//            outputString = outputString + responseString;
+//        }
+//        return outputString;
+        return a;
     }
 }

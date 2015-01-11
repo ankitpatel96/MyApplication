@@ -34,6 +34,20 @@
             android:layout_toEndOf="@+id/button2"
             android:layout_gravity="right|top" />
 
+        <TextView
+            android:id="@+id/btn_orange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:minWidth="75dp"
+            android:minHeight="75dp"
+            android:layout_gravity="left|top"
+            android:gravity="center"
+            android:background="@drawable/states_circle_orange"
+            android:clickable="true"
+            android:onClick="navigateToCar"
+            android:text="Find Car"/>
+
     </FrameLayout>
 
 
@@ -115,20 +129,6 @@
 
 
         <TextView
-            android:id="@+id/btn_orange"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:minWidth="75dp"
-            android:minHeight="75dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:background="@drawable/states_circle_orange"
-            android:clickable="true"
-            android:onClick="navigateToCar"
-            android:text="Find Car"/>
-
-        <TextView
             android:id="@+id/btn_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -197,6 +197,20 @@
             android:clickable="true"
             android:onClick="headlightButtonHandler"
             android:text="Headlight"/>
+
+        <TextView
+            android:id="@+id/btn_charge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:minWidth="75dp"
+            android:minHeight="75dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:clickable="true"
+            android:background="@drawable/states_circle_indigo"
+            android:onClick="chargeHandler"
+            android:text="Charge"/>
 
     </FrameLayout>
 

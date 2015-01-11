@@ -18,6 +18,10 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -45,6 +49,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 //import static com.ap.myapplication.ListenerService.LOGD;
 
+import com.google.android.gms.analytics.ExceptionParser;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -54,14 +59,14 @@ import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
+
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -69,6 +74,14 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+
+import java.io.File;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 public class MainActivity extends ActionBarActivity implements
@@ -264,13 +277,13 @@ public class MainActivity extends ActionBarActivity implements
 
 
             NotificationCompat.Builder notificationBuilder =
-                    new NotificationCompat.Builder(context)
-                            .setSmallIcon(R.drawable.common_signin_btn_icon_disabled_dark)
-                            .setContentTitle("" + heartRate + " + " + str1)
-                            .setContentText(getPublicStations.getData("Fremont"))
-                            .setContentIntent(viewPendingIntent)
-                            .addAction(R.drawable.ic_launcher, "foolianne", bozo);
-        Log.d("chargepoint stuff", getPublicStations.getData("Fremont") );
+                    new NotificationCompat.Builder(context);
+//                            .setSmallIcon(R.drawable.common_signin_btn_icon_disabled_dark)
+//                            .setContentTitle("" + heartRate + " + " + str1)
+//                            .setContentText(getPublicStations.getData("Fremont"))
+//                            .setContentIntent(viewPendingIntent)
+//                            .addAction(R.drawable.ic_launcher, "foolianne", bozo);
+//        Log.d("chargepoint stuff", getPublicStations.getData("Fremont") );
 
 
 
@@ -345,6 +358,57 @@ public class MainActivity extends ActionBarActivity implements
         heartrateStart();
         Toast.makeText(getApplicationContext(), "Heartrate monitoring started", Toast.LENGTH_LONG).show();
     }
+
+    public void chargeHandler(View view) throws IOException{
+        int[] loc = CarControl.fetchLocation();
+        InputStream a = getPublicStations.getData(loc[0],loc[1]);
+//        Log.d("charger",a);
+        try {
+
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(a);
+
+            //optional, but recommended
+            //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
+            doc.getDocumentElement().normalize();
+
+            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+
+            NodeList nList = doc.getElementsByTagName("stationData");
+
+            System.out.println("----------------------------");
+            String[] addressStrings = new String[nList.getLength()];
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+
+                org.w3c.dom.Node nNode = nList.item(temp);
+
+                System.out.println("\nCurrent Element :" + nNode.getNodeName());
+
+                if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+//                    Log.d("parserwholethang",eElement.toString());
+//                    Log.d("parserid",eElement.getAttribute("stationId"));
+//                    Log.d("parseraddress",eElement.getElementsByTagName("Address").item(0).getTextContent());
+                    Log.d("address1",eElement.getElementsByTagName("Address").item(0).getTextContent());
+                    addressStrings[temp] += eElement.getElementsByTagName("Address").item(0).getTextContent();
+
+
+//                    System.out.println(eElement.getElementsByTagName("lastname").item(0).getTextContent());
+//                    System.out.println(eElement.getElementsByTagName("nickname").item(0).getTextContent());
+//                    System.out.println(eElement.getElementsByTagName("salary").item(0).getTextContent());
+
+                }
+                Log.d("length", String.valueOf(addressStrings.length));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
 
     public void startListening() {
 //        BluetoothService.BluetoothScanner = new BluetoothSCanner();
