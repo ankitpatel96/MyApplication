@@ -32,7 +32,7 @@ import static android.support.v4.app.ActivityCompat.startActivity;
  * Created by Ankit on 1/10/2015.
  */
 public class CarControl extends Activity{
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
+    public static String convertInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String line = "";
         String result = "";
