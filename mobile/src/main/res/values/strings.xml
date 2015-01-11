@@ -4,5 +4,10 @@
     <string name="app_name">My Application</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
+    <string-array name="VINs">
+        <item>WBY1Z4C55EV273078</item>
+        <item>WBY1Z4C53EV273080</item>
+        <item>WBY1Z4C51EV275894</item>
+        <item>WBY1Z4C58EV275200</item>
+    </string-array>
 </resources>
