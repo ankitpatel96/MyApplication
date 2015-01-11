@@ -18,6 +18,10 @@
         <item>WBY1Z4C58EV275200</item>
     </string-array>
 
+<<<<<<< HEAD
     <string name="title_activity_friends">Friends</string>
+=======
+    <string name="title_activity_friend">FriendActivity</string>
+>>>>>>> origin/master
 
 </resources>

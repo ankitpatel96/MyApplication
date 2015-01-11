@@ -8,6 +8,10 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BODY_SENSORS" />
+<<<<<<< HEAD
+=======
+    <uses-permission android:name="android.permission.SEND_SMS" />
+>>>>>>> origin/master
 
     <application
         android:allowBackup="true"
@@ -39,11 +43,16 @@
         </service>
 
         <activity
+<<<<<<< HEAD
             android:name=".Friends"
             android:label="@string/title_activity_friends" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ap.myapplication.MainActivity" />
+=======
+            android:name=".FriendActivity"
+            android:label="@string/title_activity_friend" >
+>>>>>>> origin/master
         </activity>
     </application>
 
