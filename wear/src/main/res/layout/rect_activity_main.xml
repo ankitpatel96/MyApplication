@@ -50,7 +50,7 @@
             android:background="@drawable/states_circle_blue"
             android:clickable="true"
             android:onClick="heartrateStart"
-            android:text="!"/>
+            android:text="HELP!"/>
 
         <TextView
             android:id="@+id/btn_main"

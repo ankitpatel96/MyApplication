@@ -25,6 +25,11 @@
             android:name=".FriendNavi"
             android:label="@string/title_activity_friend_navi" >
         </activity>
+
+        <service
+            android:name=".HeartRateService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

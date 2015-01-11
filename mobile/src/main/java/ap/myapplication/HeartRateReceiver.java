@@ -84,7 +84,7 @@ public class HeartRateReceiver extends BroadcastReceiver{
             a = carInfo.getEntity().getContent();
             l = CarControl.convertInputStreamToString(a);
             object = (JSONObject) new JSONTokener(l).nextValue();
-            emergency += "Your friend is driving a " + object.getString("year") + " " + object.get("color") + " " + object.getString("make") + " " + object.getString("model");
+            emergency += " Your friend is driving a " + object.getString("year") + " " + object.get("color") + " " + object.getString("make") + " " + object.getString("model");
             emergency += ": VIN number " + object.get("vin") + ".  " + object.getString("country") + " make.";
             return emergency;
         } catch (Exception e) {

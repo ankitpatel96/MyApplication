@@ -52,6 +52,12 @@ public class MainActivity extends Activity {
                 .addApi(Wearable.API)
                 .build();
         mGoogleApiClient.connect();
+
+        Intent mServiceIntent = new Intent(this, HeartRateService.class);
+        mServiceIntent.setData(Uri.parse("uri1"));
+        // Starts the IntentService
+        this.startService(mServiceIntent);
+
     }
 //    private Collection<String> getNodes() {
 //        final HashSet <String>results = new HashSet<String>();
@@ -71,7 +77,7 @@ public class MainActivity extends Activity {
 
     public void heartrateStart(View view)
     {
-        sendToPhone("heartrateStart");
+        sendToPhone("help");
     }
     public void hello(View view)
     {
