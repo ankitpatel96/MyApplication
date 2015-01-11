@@ -278,7 +278,7 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     public void navigateToCar(View view) {
-        carControl1.navigateToCarWorker();
+        navigateToCarWorker();
     }
 
 
@@ -318,6 +318,7 @@ public class MainActivity extends ActionBarActivity implements
 
         getApplicationContext().registerReceiver(BluetoothScanner,
                 new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED));
+        getApplicationContext().registerReceiver(LockReceiver, new IntentFilter("lockcar"));
     }
     public final BroadcastReceiver BluetoothScanner = new BroadcastReceiver() {
         @Override
@@ -329,13 +330,120 @@ public class MainActivity extends ActionBarActivity implements
                 if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(trueAction)) {
                     Toast.makeText(context, device.getName() + " Device is now connected", Toast.LENGTH_LONG).show();
                 } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(trueAction)) {
-                    Toast.makeText(context, device.getName() + " Device has disconnected", Toast.LENGTH_LONG).show();
+                    String deviceName = device.getName();
+                    Toast.makeText(context, deviceName + " Device has disconnected", Toast.LENGTH_LONG).show();
+                    if(deviceName.contains("Watch")) {
+                        Toast.makeText(context, deviceName + " OMG I FOUND IT", Toast.LENGTH_LONG).show();
+                        Log.d("hi","hey");
+                        checkStatus();
+                    }
 //                context.startService(new Intent(context, BluetoothService.class));
                 }
             }
         }
 
     };
+    public final BroadcastReceiver LockReceiver = new BroadcastReceiver() {
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.v("lock", "I Arrived!!!!");
+            Log.v("lock",intent.getAction());
+        }
+    };
 
+    public void statusHandler(View view) {
+        Log.d("status","here we are");
+        checkStatus();
+    }
+    public void navigateToCarWorker() {
+        float lat;
+        float lon;
+        try {
+            String loc = CarControl.getLocation();
+            //parser
+            int lathelp = loc.indexOf("lat");
+            int lonhelp = loc.indexOf("lon");
+            lat = Float.parseFloat(loc.substring(lathelp + 5, lonhelp - 2));
+            int headinghelp = loc.indexOf("heading");
+            lon = Float.parseFloat(loc.substring(lonhelp + 5, headinghelp - 2));
+            Log.d("location", Float.toString(lat));
+            Log.d("location", Float.toString(lon));
+
+            //set navigation
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost("http://api.hackthedrive.com/vehicles/" + MainActivity.VIN + "/navigation/");
+            try {
+                List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+                urlParameters.add(new BasicNameValuePair("key", "ankit2015"));
+
+                JSONObject jsonobj = new JSONObject();
+                jsonobj.put("label", "Beamer yo");
+                jsonobj.put("lat", Float.toString(lat));
+                jsonobj.put("lon", Float.toString(lon));
+
+                StringEntity se = new StringEntity(jsonobj.toString());
+                se.setContentType("application/json;charset=UTF-8");
+                post.setEntity(se);
+
+                HttpResponse response = client.execute(post);
+                InputStream a = response.getEntity().getContent();
+                String l = convertInputStreamToString(a);
+                Log.d("navi", l);
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
+                startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d("navi failed", e.toString());
+            }
+        } catch (Exception e) {
+            Log.d("location fetch fail", e.toString());
+        }
+    }
+    public void checkStatus() {
+        Log.d("status", "commenced");
+        int notificationId = 4;
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this)
+                        .setContentTitle("Check Car!")
+                        .setSmallIcon(R.drawable.common_signin_btn_icon_disabled_dark);
+//                    .setContentIntent(viewPendingIntent);
+//                    .addAction(R.drawable.ic_launcher, "foolianne", bozo);
+
+// Get an instance of the NotificationManager service
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        Intent lockCar = new Intent();
+// Build the notification and issues it with notification manager.
+
+        String contentText = "";
+        if (!CarControl.checkTrunk()) {
+            contentText += "check your trunk ";
+
+        }
+        if (!CarControl.checkWindow()) {
+            contentText += "check your windows ";
+
+        }
+        if (!CarControl.checkDoors()) {
+            contentText += "check your doors ";
+
+        }
+        if (!CarControl.checkLock()) {
+            contentText += "check your lock ";
+            lockCar.setAction("lockcar");
+        }
+        if(contentText != "") {
+            notificationBuilder.setContentText(contentText);
+            
+            lockCar.addFlags(99);
+            PendingIntent pendingLockCar = PendingIntent.getBroadcast(this, 12345, lockCar, PendingIntent.FLAG_ONE_SHOT);
+            notificationBuilder.addAction(17301551, "Lock Car!", pendingLockCar);
+
+            notificationManager.notify(notificationId, notificationBuilder.build());
+        }
+        else {
+            return;
+        }
+    }
 }

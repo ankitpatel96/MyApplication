@@ -1,8 +1,11 @@
 package ap.myapplication;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
@@ -156,6 +159,7 @@ public class CarControl extends Activity{
     }
 
 
+
     public static String GET(String url) {
         InputStream inputStream = null;
         String result = "";
@@ -264,50 +268,6 @@ public class CarControl extends Activity{
             return false;
         }
     }
-    public void navigateToCarWorker() {
-        float lat;
-        float lon;
-        try {
-            String loc = CarControl.getLocation();
-            //parser
-            int lathelp = loc.indexOf("lat");
-            int lonhelp = loc.indexOf("lon");
-            lat = Float.parseFloat(loc.substring(lathelp + 5, lonhelp - 2));
-            int headinghelp = loc.indexOf("heading");
-            lon = Float.parseFloat(loc.substring(lonhelp + 5, headinghelp - 2));
-            Log.d("location", Float.toString(lat));
-            Log.d("location", Float.toString(lon));
 
-            //set navigation
-            HttpClient client = new DefaultHttpClient();
-            HttpPost post = new HttpPost("http://api.hackthedrive.com/vehicles/" + MainActivity.VIN + "/navigation/");
-            try {
-                List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-                urlParameters.add(new BasicNameValuePair("key", "ankit2015"));
-
-                JSONObject jsonobj = new JSONObject();
-                jsonobj.put("label", "Beamer yo");
-                jsonobj.put("lat", Float.toString(lat));
-                jsonobj.put("lon", Float.toString(lon));
-
-                StringEntity se = new StringEntity(jsonobj.toString());
-                se.setContentType("application/json;charset=UTF-8");
-                post.setEntity(se);
-
-                HttpResponse response = client.execute(post);
-                InputStream a = response.getEntity().getContent();
-                String l = convertInputStreamToString(a);
-                Log.d("navi", l);
-                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                        Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
-                startActivity(intent);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.d("navi failed", e.toString());
-            }
-        } catch (Exception e) {
-            Log.d("location fetch fail", e.toString());
-        }
-    }
 
 }
