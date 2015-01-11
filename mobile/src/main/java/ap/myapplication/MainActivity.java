@@ -77,6 +77,7 @@ public class MainActivity extends ActionBarActivity implements
     public byte[] bitches = {1, 2, 3, 4, 5};
     public static int heartRate = -2;
     public static final String START_ACTIVITY_PATH = "/start/MainActivity";
+    CarControl carControl1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +87,7 @@ public class MainActivity extends ActionBarActivity implements
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
@@ -113,11 +115,6 @@ public class MainActivity extends ActionBarActivity implements
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mHeartRateReceiver,
                 mHeartRateIntentFilter);
-
-
-
-
-
         startListening();
 
     }
@@ -215,40 +212,6 @@ public class MainActivity extends ActionBarActivity implements
         // Another interface callback
     }
 
-    public String getLocation() throws IOException {
-        String line = null;
-        line = GET("http://api.hackthedrive.com/vehicles/" + VIN + "/location");
-        return line;
-    }
-
-
-    public static String GET(String url) {
-        InputStream inputStream = null;
-        String result = "";
-        try {
-
-            // create HttpClient
-            HttpClient httpclient = new DefaultHttpClient();
-
-            // make GET request to the given URL
-            HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
-
-            // receive response as inputStream
-            inputStream = httpResponse.getEntity().getContent();
-
-            // convert inputstream to string
-            if (inputStream != null)
-                result = convertInputStreamToString(inputStream);
-            else
-                result = "Did not work!";
-
-        } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
-        }
-
-        return result;
-    }
-
     // convert inputstream to String
     private static String convertInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -262,13 +225,12 @@ public class MainActivity extends ActionBarActivity implements
 
     }
 
-
     public void hello(View view) {
         System.out.println("hi");
         int notificationId = 001;
         String str1 = "hello";
         try {
-            str1 = getLocation();
+            str1 = CarControl.getLocation();
         } catch (IOException c) {
 
         }
@@ -305,143 +267,25 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     public void navigateToCar(View view) {
-        float lat;
-        float lon;
-        try {
-            String loc = getLocation();
-            //parser
-            int lathelp = loc.indexOf("lat");
-            int lonhelp = loc.indexOf("lon");
-            lat = Float.parseFloat(loc.substring(lathelp + 5, lonhelp - 2));
-            int headinghelp = loc.indexOf("heading");
-            lon = Float.parseFloat(loc.substring(lonhelp + 5, headinghelp - 2));
-            Log.d("location", Float.toString(lat));
-            Log.d("location", Float.toString(lon));
-
-            //set navigation
-            HttpClient client = new DefaultHttpClient();
-            HttpPost post = new HttpPost("http://api.hackthedrive.com/vehicles/" + VIN + "/navigation/");
-            try {
-                List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-                urlParameters.add(new BasicNameValuePair("key", "ankit2015"));
-
-                JSONObject jsonobj = new JSONObject();
-                jsonobj.put("label", "Beamer yo");
-                jsonobj.put("lat", Float.toString(lat));
-                jsonobj.put("lon", Float.toString(lon));
-
-                StringEntity se = new StringEntity(jsonobj.toString());
-                se.setContentType("application/json;charset=UTF-8");
-                post.setEntity(se);
-
-                HttpResponse response = client.execute(post);
-                InputStream a = response.getEntity().getContent();
-                String l = convertInputStreamToString(a);
-                Log.d("navi", l);
-                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                        Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lon));
-                startActivity(intent);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.d("navi failed", e.toString());
-            }
-        } catch (Exception e) {
-            Log.d("location fetch fail", e.toString());
-        }
+        carControl1.navigateToCarWorker();
     }
 
-    public Boolean lockCar() {
-        HttpClient client = new DefaultHttpClient();
-        HttpPost post = new HttpPost("http://api.hackthedrive.com/vehicles/" + VIN + "/lock/");
-        try {
-            List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-            urlParameters.add(new BasicNameValuePair("key", "ankit2015"));
 
-            JSONObject jsonobj = new JSONObject();
-            jsonobj.put("key", "ankit2015");
-            StringEntity se = new StringEntity(jsonobj.toString());
-            se.setContentType("application/json;charset=UTF-8");
-            post.setEntity(se);
 
-            HttpResponse response = client.execute(post);
-            InputStream a = response.getEntity().getContent();
-            String l = convertInputStreamToString(a);
-            Log.d("lock", l);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d("lock failed", e.toString());
-            return false;
-        }
-    }
 
     public void lockButtonHandler(View view) {
-        Boolean a = lockCar();
+        Boolean a = CarControl.lockCar();
         Log.d("lockbuttonstatus", a.toString());
     }
-    public Boolean honkCar() {
-        return honkCar(2);
-    }
 
-    public Boolean honkCar(int count) {
-
-        CarControl.checkTrunk();
-
-
-            HttpClient client = new DefaultHttpClient();
-            HttpPost post = new HttpPost("http://api.hackthedrive.com/vehicles/" + VIN + "/horn/");
-            try {
-                List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-                urlParameters.add(new BasicNameValuePair("key", "ankit2015"));
-
-                JSONObject jsonobj = new JSONObject();
-                jsonobj.put("key", "ankit2015");
-                jsonobj.put("count", count);
-                StringEntity se = new StringEntity(jsonobj.toString());
-                se.setContentType("application/json;charset=UTF-8");
-                post.setEntity(se);
-
-                HttpResponse response = client.execute(post);
-                InputStream a = response.getEntity().getContent();
-                String l = convertInputStreamToString(a);
-                Log.d("honk", l);
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.d("honk failed", e.toString());
-                return false;
-            }
-    }
 
     public void hornButtonHandler(View view) {
-        honkCar();
+        CarControl.honkCar();
     }
 
-    public Boolean toggleHeadlights() {
-        HttpClient client = new DefaultHttpClient();
-        HttpPost post = new HttpPost("http://api.hackthedrive.com/vehicles/" + VIN + "/lights/");
-        try {
-            List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-            urlParameters.add(new BasicNameValuePair("key", "ankit2015"));
 
-            JSONObject jsonobj = new JSONObject();
-            StringEntity se = new StringEntity(jsonobj.toString());
-            se.setContentType("application/json;charset=UTF-8");
-            post.setEntity(se);
 
-            HttpResponse response = client.execute(post);
-            InputStream a = response.getEntity().getContent();
-            String l = convertInputStreamToString(a);
-            Log.d("lights", l);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d("lights failed", e.toString());
-            return false;
-        }
-    }
-
-    public void headlightButtonHandler(View view) { toggleHeadlights();}
+    public void headlightButtonHandler(View view) { CarControl.toggleHeadlights();}
 
     public void heartrateStart(View view){
         /*
